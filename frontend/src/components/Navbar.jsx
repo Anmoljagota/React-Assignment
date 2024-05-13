@@ -19,6 +19,7 @@ const Navbar = () => {
   const { cartItems } = useSelector((product) => {
     return product.Products;
   });
+  console.log(colorMode,"colormode");
   return (
     <Box as="nav" bg={"#9F7AEA"} p={6}>
       <Flex
