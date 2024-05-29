@@ -5,3 +5,4 @@ import { reducer as User } from "./User/reducer";
 const rootReducer = combineReducers({ Products, User });
 const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
 export { store };
+
