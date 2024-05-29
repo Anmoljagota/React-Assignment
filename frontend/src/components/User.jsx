@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -7,13 +8,9 @@ import {
   Image,
   Input,
 } from "@chakra-ui/react";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 
-const Login = () => {
-  const initialFocus = useRef(null);
-  useEffect(() => {
-    initialFocus.current.focus();
-  }, []);
+const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
   return (
     <Flex justifyContent={"center"} height={"100vh"} alignItems={"center"}>
       <Flex
@@ -33,12 +30,21 @@ const Login = () => {
           src="https://i.pinimg.com/736x/0b/73/51/0b7351f7b132512ea28fae9d5fff1bde--triangle-logos-triangle-logo-design.jpg"
           alt="Dan Abramov"
         />
-        <Heading>Login</Heading>
+        <Heading>{title}</Heading>
         <FormControl isRequired mt={6}>
-          <FormLabel>Email</FormLabel>
-          <Input ref={initialFocus} />
-          <FormLabel mt={4}>Password</FormLabel>
-          <Input />
+          {details.map((item, index) => {
+            return (
+              <Box key={index}>
+                <FormLabel>{item}</FormLabel>
+                <Input
+                  value={uservalue[item]}
+                  onChange={handleDetails}
+                  name={item}
+                />
+              </Box>
+            );
+          })}
+
           <Flex justifyContent={"center"}>
             <Button
               mt={6}
@@ -46,6 +52,7 @@ const Login = () => {
               type="submit"
               borderRadius={18}
               width="100px"
+              onClick={handleSubmit}
             >
               Submit
             </Button>
@@ -56,4 +63,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default User;

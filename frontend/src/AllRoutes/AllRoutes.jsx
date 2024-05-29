@@ -4,7 +4,8 @@ import Home from "../Pages/Home";
 import SinglePage from "../components/SinglePage";
 import Favourate from "../components/Favourate";
 import { useSelector } from "react-redux";
-import Login from "../components/Login";
+import Login from "../Pages/Login";
+import Register from "../Pages/Register";
 const AllRoutes = () => {
   const { wishlist, cartItems } = useSelector((favourate) => {
     return favourate.Products;
@@ -22,6 +23,7 @@ const AllRoutes = () => {
         element={<Favourate items={cartItems} text={"Cart Items"} />}
       />
       <Route path="/login" element={<Login />}></Route>
+      <Route path="/register" element={<Register />}></Route>
     </Routes>
   );
 };

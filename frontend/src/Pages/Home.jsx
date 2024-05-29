@@ -12,12 +12,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../components/Sidear";
-import { GetProduct } from "../redux/action";
+import { GetProduct } from "../redux/Products/action";
 import { Link, useSearchParams } from "react-router-dom";
 import Sorting from "../components/Sorting";
 import { FaHeart } from "react-icons/fa";
 import { Skeleton } from "@chakra-ui/react";
-import { ADDTOCART, Wishlist_SUCCESS } from "../redux/actionTypes";
+import { ADDTOCART, Wishlist_SUCCESS } from "../redux/Products/actionTypes";
 
 const Home = () => {
   const { loading, products, wishlist, cartItems } = useSelector((product) => {
@@ -30,7 +30,6 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const orderurl = searchParams.get("_order");
   const dispatch = useDispatch();
-  console.log(cartItems, "cartitems");
   useEffect(() => {
     if (products.length === 0 || location) {
       const changedata = {
