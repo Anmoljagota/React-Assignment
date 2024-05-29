@@ -43,6 +43,8 @@ const Navbar = () => {
         <Link to="/favourate">
           <Text>Wishlist</Text>
         </Link>
+        <Text>Login</Text>
+
         <Flex
           fontSize={".8rem"}
           justifyContent={"center"}
