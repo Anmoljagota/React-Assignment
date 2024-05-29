@@ -1,10 +1,12 @@
 const express = require("express");
 const Product_Route = require("./routes/Products.route");
+const User = require("./routes/User.route");
 require("dotenv").config();
 const conn = require("./config/db");
 const app = express();
 app.use(express.json());
 app.use("/", Product_Route);
+app.use("/", User);
 app.listen(process.env.PORT, async () => {
   try {
     await conn;
@@ -15,4 +17,4 @@ app.listen(process.env.PORT, async () => {
   }
 });
 
-//backend
+
