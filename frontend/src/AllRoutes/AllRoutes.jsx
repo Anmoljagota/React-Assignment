@@ -10,6 +10,8 @@ const AllRoutes = () => {
   const { wishlist, cartItems } = useSelector((favourate) => {
     return favourate.Products;
   });
+
+  //all routes
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
@@ -29,4 +31,3 @@ const AllRoutes = () => {
 };
 
 export default AllRoutes;
-

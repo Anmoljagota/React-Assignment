@@ -64,4 +64,3 @@ const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
 };
 
 export default User;
-
