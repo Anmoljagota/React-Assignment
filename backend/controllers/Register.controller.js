@@ -1,7 +1,10 @@
 const { isEmail } = require("validator");
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const RegisterModel = require("../models/Register.model");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+let otp;
 //USER REGISTER CONTROLLER
 const Register = async (req, res) => {
   const { name, phone, email, password } = req.body;
@@ -37,29 +40,63 @@ const Register = async (req, res) => {
 //USER LOGIN CONTROLLER
 const login = async (req, res) => {
   const { email, password } = req.body;
-
-  try {
-    const checkuser = await RegisterModel.find({ email });
-    console.log(password, "check");
-    if (checkuser.length > 0) {
-      bcrypt.compare(password, checkuser[0].password, function (err, result) {
-        if (err) {
-          res.send(err);
-        } else if (!result) {
-          res.status(401).send("Incorrect Password");
-        } else {
-          console.log("hooo");
-          const token = jwt.sign({ UserId: checkuser[0]._id }, "checklogin");
-          res.status(200).send(token);
-        }
-      });
+  if (req.query.otp) {
+    if (otp === +req.query.otp) {
+      const user = await RegisterModel.find({ email });
+      const token = jwt.sign({ UserId: user[0]._id }, "checklogin");
+      res.status(200).send({ message: token });
     } else {
-      res.status(401).send("Incorrect email");
+      res.status(200).send({ message: "wrong otp" });
     }
-  } catch (err) {
-    console.log("c...");
-    res.status(500).send(err);
+  } else {
+    try {
+      const checkuser = await RegisterModel.find({ email });
+      if (checkuser.length > 0) {
+        bcrypt.compare(password, checkuser[0].password, function (err, result) {
+          if (err) {
+            res.send(err);
+          } else if (!result) {
+            res.status(401).send("Incorrect Password");
+          } else {
+            otp = Math.floor(45768 + Math.random() * 64648);
+
+            const transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSWORD,
+              },
+            });
+
+            const info = {
+              from: "anmoljagota08@gmail.com",
+              to: email,
+              subject: "email verification shop.com",
+              html: `
+                  <b>Hello!</b>
+                  <p>You are receiving this email because we received an OTP request for your account.</p>
+                  <p>${otp}</p>
+                  <p>If you did not request an OTP, no further action is required.</p>
+                  <p>Regards,</p>
+                  <p>shop.com</p>
+                `,
+            };
+
+            transporter.sendMail(info, (err, result) => {
+              if (err) {
+                // console.log(`error in sending mail ${err}`);
+              } else {
+                res.status(200).send({ message: "OTP sent" });
+              }
+            });
+          }
+        });
+      } else {
+        res.status(401).send("Incorrect email");
+      }
+    } catch (err) {
+      res.status(500).send(err);
+    }
   }
 };
-
 module.exports = { Register, login };
