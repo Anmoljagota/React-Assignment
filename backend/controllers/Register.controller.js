@@ -5,6 +5,7 @@ const RegisterModel = require("../models/Register.model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 let otp;
+let userIdcache;
 //USER REGISTER CONTROLLER
 const Register = async (req, res) => {
   const { name, phone, email, password } = req.body;
@@ -42,8 +43,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   if (req.query.otp) {
     if (otp === +req.query.otp) {
-      const user = await RegisterModel.find({ email });
-      const token = jwt.sign({ UserId: user[0]._id }, "checklogin");
+      const token = jwt.sign({ UserId: userIdcache }, "checklogin");
       res.status(200).send({ message: token });
     } else {
       res.status(200).send({ message: "wrong otp" });
@@ -52,13 +52,14 @@ const login = async (req, res) => {
     try {
       const checkuser = await RegisterModel.find({ email });
       if (checkuser.length > 0) {
+        userIdcache = checkuser[0]._id;
         bcrypt.compare(password, checkuser[0].password, function (err, result) {
           if (err) {
             res.send(err);
           } else if (!result) {
-            res.status(401).send("Incorrect Password");
+            res.status(401).send({ message: "Incorrect Password" });
           } else {
-            otp = Math.floor(45768 + Math.random() * 64648);
+            otp = Math.floor(1000 + Math.random() * 9000);
 
             const transporter = nodemailer.createTransport({
               service: "gmail",
@@ -92,7 +93,8 @@ const login = async (req, res) => {
           }
         });
       } else {
-        res.status(401).send("Incorrect email");
+        userIdcache;
+        res.status(401).send({ message: "Incorrect email" });
       }
     } catch (err) {
       res.status(500).send(err);
