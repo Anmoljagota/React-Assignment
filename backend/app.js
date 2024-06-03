@@ -12,7 +12,12 @@ app.use(helmet());
 app.use("/", Product_Route);
 app.use(cookieParser());
 app.use("/", User);
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.listen(process.env.PORT, async () => {
   try {
     await conn;

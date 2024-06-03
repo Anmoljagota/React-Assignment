@@ -44,12 +44,15 @@ const login = async (req, res) => {
   if (req.query.otp) {
     if (otp === +req.query.otp) {
       const token = jwt.sign({ UserId: userIdcache }, "checklogin");
+
       res.cookie("token", token, {
         httpOnly: true,
         secure: (process.env.NODE_ENV = "production"),
         maxAge: 3600000,
+        path: "/",
+        domain: "localhost",
       });
-      res.status(200).send({ message: token });
+      res.status(200).send({ message: "logged in successfully" });
     } else {
       res.status(200).send({ message: "wrong otp" });
     }
@@ -84,4 +87,16 @@ const login = async (req, res) => {
     }
   }
 };
-module.exports = { Register, login };
+
+const userDetails = async (req, res) => {
+  try {
+    const details = await RegisterModel.findById({
+      _id: req.body.UserId,
+    }).populate("cart.productId");
+    // console.log(details.populate(details.cart.productId), "populate");
+    res.status(200).send(details);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+};
+module.exports = { Register, login, userDetails };
