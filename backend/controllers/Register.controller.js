@@ -2,8 +2,8 @@ const { isEmail } = require("validator");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const RegisterModel = require("../models/Register.model");
+const Email_Verification = require("../services/EmailVerification");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 let otp;
 let userIdcache;
 //USER REGISTER CONTROLLER
@@ -44,6 +44,11 @@ const login = async (req, res) => {
   if (req.query.otp) {
     if (otp === +req.query.otp) {
       const token = jwt.sign({ UserId: userIdcache }, "checklogin");
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: (process.env.NODE_ENV = "production"),
+        maxAge: 3600000,
+      });
       res.status(200).send({ message: token });
     } else {
       res.status(200).send({ message: "wrong otp" });
@@ -60,29 +65,7 @@ const login = async (req, res) => {
             res.status(401).send({ message: "Incorrect Password" });
           } else {
             otp = Math.floor(1000 + Math.random() * 9000);
-
-            const transporter = nodemailer.createTransport({
-              service: "gmail",
-              auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PASSWORD,
-              },
-            });
-
-            const info = {
-              from: "anmoljagota08@gmail.com",
-              to: email,
-              subject: "email verification shop.com",
-              html: `
-                  <b>Hello!</b>
-                  <p>You are receiving this email because we received an OTP request for your account.</p>
-                  <p>${otp}</p>
-                  <p>If you did not request an OTP, no further action is required.</p>
-                  <p>Regards,</p>
-                  <p>shop.com</p>
-                `,
-            };
-
+            const { transporter, info } = Email_Verification(email, otp);
             transporter.sendMail(info, (err, result) => {
               if (err) {
                 // console.log(`error in sending mail ${err}`);

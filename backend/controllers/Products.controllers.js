@@ -26,11 +26,9 @@ const AddToCart = async (req, res) => {
   const { productId } = req.query;
   try {
     const user = await RegisterModel.findById({ _id: UserId });
-    console.log(user, "user");
     const checkProduct = user.cart.find(
       (item) => item.productId.toString() === productId
     );
-    console.log(checkProduct, "pp");
     if (checkProduct) {
       checkProduct.count += 1;
     } else {
