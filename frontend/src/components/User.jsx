@@ -7,10 +7,20 @@ import {
   Heading,
   Image,
   Input,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 
-const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
+const User = ({
+  details,
+  title,
+  uservalue,
+  handleDetails,
+  handleSubmit,
+  error,
+  formError,
+}) => {
   return (
     <Flex justifyContent={"center"} height={"100vh"} alignItems={"center"}>
       <Flex
@@ -21,7 +31,7 @@ const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
         color={"white"}
         flexDir={"column"}
         alignItems={"center"}
-        p={8}
+        p={6}
         borderRadius={10}
       >
         <Image
@@ -35,17 +45,29 @@ const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
           {details.map((item, index) => {
             return (
               <Box key={index}>
-                <FormLabel>{item}</FormLabel>
+                <FormLabel mt={2}>{item}</FormLabel>
                 <Input
                   value={uservalue[item]}
                   onChange={handleDetails}
                   name={item}
+                  isInvalid={error === item}
                 />
+
+                {error === item && (
+                  <Box as={"span"} color="red">
+                    {formError}
+                  </Box>
+                )}
               </Box>
             );
           })}
 
-          <Flex justifyContent={"center"}>
+          <Flex
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={"column"}
+            gap={"1rem"}
+          >
             <Button
               mt={6}
               bg={"#FFFFFF"}
@@ -56,6 +78,14 @@ const User = ({ details, title, uservalue, handleDetails, handleSubmit }) => {
             >
               Submit
             </Button>
+            {title === "Login" && (
+              <Text>
+                Not a member?{" "}
+                <Link style={{ textDecoration: "underline" }} to={"/register"}>
+                  Sign up now
+                </Link>
+              </Text>
+            )}
           </Flex>
         </FormControl>
       </Flex>

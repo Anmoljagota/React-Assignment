@@ -1,10 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,

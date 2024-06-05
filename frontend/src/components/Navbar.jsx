@@ -8,18 +8,27 @@ import {
   InputRightElement,
   Center,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { MoonIcon, SearchIcon, SunIcon } from "@chakra-ui/icons";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { UserDetails } from "../redux/User/action";
+
 const Navbar = () => {
+  const dispatch = useDispatch();
   const { colorMode, toggleColorMode } = useColorMode();
-  const { cartItems } = useSelector((product) => {
-    return product.Products;
+  const {
+    User: { userdetails },
+    Products: { cartItems },
+  } = useSelector((details) => {
+    return details;
   });
-  console.log(colorMode,"colormode");
+  useEffect(() => {
+    dispatch(UserDetails());
+  }, [cartItems.cart]);
+
   return (
     <Box as="nav" bg={"#9F7AEA"} p={6}>
       <Flex
@@ -43,8 +52,9 @@ const Navbar = () => {
         <Link to="/favourate">
           <Text>Wishlist</Text>
         </Link>
-        <Text>Login</Text>
-
+        <Link to={"/login"}>
+          <Text>Login</Text>
+        </Link>
         <Flex
           fontSize={".8rem"}
           justifyContent={"center"}
@@ -59,7 +69,7 @@ const Navbar = () => {
             height="18px"
             fontSize="12px"
           >
-            {cartItems.length > 0 ? cartItems.length : 0}
+            {userdetails?.cart?.length > 0 ? userdetails.cart.length : 0}
           </Center>
           <Link to={"/cart"}>
             <AiOutlineShoppingCart style={{ fontSize: "1.4rem" }} />

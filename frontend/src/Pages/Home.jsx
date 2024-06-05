@@ -18,6 +18,7 @@ import Sorting from "../components/Sorting";
 import { FaHeart } from "react-icons/fa";
 import { Skeleton } from "@chakra-ui/react";
 import { ADDTOCART, Wishlist_SUCCESS } from "../redux/Products/actionTypes";
+import { UserDetails } from "../redux/User/action";
 
 const Home = () => {
   const { loading, products, wishlist, cartItems } = useSelector((product) => {
@@ -39,7 +40,8 @@ const Home = () => {
           _order: orderurl,
         },
       };
-      dispatch(GetProduct(limit, changedata));
+      dispatch(GetProduct(limit));
+      dispatch(UserDetails());
     }
   }, [location.search]);
 
@@ -56,12 +58,9 @@ const Home = () => {
     dispatch({ type: Wishlist_SUCCESS, payload: updateWishlist });
   };
 
-  const AddToCart = (e, ele) => {
-    e.preventDefault();
-    dispatch({ type: ADDTOCART, payload: ele });
-  };
+ 
   return (
-    <Flex w={"90%"} m={"auto"} justifyContent={"space-between"} minH="88vh">
+    <Flex w={"92%"} m={"auto"} justifyContent={"space-between"} minH="88vh">
       <Box w={"20%"}>
         <SideBar />
       </Box>
@@ -72,8 +71,8 @@ const Home = () => {
             {products.length > 0 &&
               products.slice(page * limit - limit, page * limit).map((ele) => (
                 <Link
-                  to={`/detail/${ele.id}`}
-                  key={ele.id}
+                  to={`/detail/${ele._id}`}
+                  key={ele._id}
                   state={ele}
                   style={{ color: "black" }}
                 >
@@ -111,7 +110,7 @@ const Home = () => {
                     <Heading as={"h6"} size={"sm"} mt={2}>
                       price: {ele.price}
                     </Heading>
-                    <WrapItem
+                    {/* <WrapItem
                       gap={"15px"}
                       position={"absolute"}
                       bottom={"8"}
@@ -127,7 +126,7 @@ const Home = () => {
                       <Button colorScheme="yellow" size={"sm"}>
                         Buy now
                       </Button>
-                    </WrapItem>
+                    </WrapItem> */}
                   </Box>
                 </Link>
               ))}
